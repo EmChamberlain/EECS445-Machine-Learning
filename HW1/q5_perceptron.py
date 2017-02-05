@@ -8,11 +8,13 @@ HW1 Q5 Perceptron Algorithm with Offset
 import numpy as np
 import helper as h
 
+
 def is_correct(xi, yi, theta, b):
     dot_prod = np.dot(xi, theta) + b
     if dot_prod == 0:
         return False
     return np.sign(dot_prod) == yi
+
 
 def all_correct(X, y, theta, b):
     """
@@ -39,8 +41,8 @@ def perceptron(X, y):
     while not all_correct(X, y, theta, b):
         for n in range(X.shape[0]):
             if not is_correct(X[n], y[n], theta, b):
-                alpha[n]+=1
-                theta += y[n]*X[n]
+                alpha[n] += 1
+                theta += y[n] * X[n]
                 b += y[n]
 
     return theta, b, alpha

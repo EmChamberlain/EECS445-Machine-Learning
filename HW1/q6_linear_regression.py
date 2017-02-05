@@ -23,7 +23,7 @@ def calculate_RMS_Error(X, y, theta, M):
     phi = generate_polynomial_features(X, M)
     sum = 0
     for i in range(n):
-        sum += np.power( (np.dot(theta, phi[i]) - y[i]) ,2)
+        sum += np.power((np.dot(theta, phi[i]) - y[i]), 2)
     return np.sqrt(sum / n)
 
     return E_rms
@@ -35,18 +35,20 @@ def generate_polynomial_features(X, M):
     X to an M+1 dimensional feature vector e.g. [1, X, X^2, ...,X^M]
     Returns the mapped data as an nx(M+1) array.
     """
-    Phi = np.ndarray(shape=(X.shape[0], M+1))
+    Phi = np.ndarray(shape=(X.shape[0], M + 1))
     for n in range(X.shape[0]):
         Phi[n, 0] = 1
         for m in range(1, M + 1):
             Phi[n, m] = np.power(X[n], M)
     return Phi
 
+
 def calculate_error(phi, y, theta):
     sum = 0
     for i in range(phi.shape[0]):
-        sum+= np.power(y[i] - np.dot(theta, phi[i]), 2)/2;
+        sum += np.power(y[i] - np.dot(theta, phi[i]), 2) / 2;
     return sum / phi.shape[0]
+
 
 def ls_stochastic_gradient_descent(X, y, learning_rate=0):
     """
@@ -71,7 +73,7 @@ def ls_stochastic_gradient_descent(X, y, learning_rate=0):
         #     print("Theta: " + str(theta))
         prev_cost = calculate_error(phi, y, theta)
         for t in range(X.shape[0]):
-            theta += (1/(count + 1))*(y[t]-np.dot(theta, phi[t]))*phi[t]
+            theta += (1 / (count + 1)) * (y[t] - np.dot(theta, phi[t])) * phi[t]
         new_error = calculate_error(phi, y, theta)
         count += 1
     print("Number of iterations: " + str(count))
@@ -93,8 +95,8 @@ def closed_form_optimization(X, y, M, reg_param=0):
     A = np.zeros((M + 1, M + 1))
     for i in range(n):
         phi_mat = np.matrix(phi[i])
-        b -= y[i]*phi[i]
-        A += np.transpose(phi_mat)*phi_mat
+        b -= y[i] * phi[i]
+        A += np.transpose(phi_mat) * phi_mat
 
     b = np.divide(b, n)
     A = np.divide(A, n)
