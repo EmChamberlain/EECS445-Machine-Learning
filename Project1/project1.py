@@ -535,10 +535,10 @@ def main():
 
     # output_2_c(word_dict, X, y)
     # output_3_1_c(X_train, y_train)
-    # output_3_1_d(X, y)
-    # output_3_2_b(X, y)
+    # output_3_1_d(X_train, y_train)
+    # output_3_2_b(X_train, y_train)
     # output_3_4_a(X_train, y_train)
-    # output_3_4_b(X, y)
+    # output_3_4_b(X_train, y_train)
 
     # custom_info_linear_L2(X_train, y_train)
     # custom_info_linear_L1(X_train, y_train)
