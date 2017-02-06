@@ -59,7 +59,6 @@ def extract_dictionary(df):
         unique = np.delete(unique, 0)
     return unique
 
-
 def generate_feature_matrix(df, word_dict):
     """
         Reads a dataframe and the dictionary of words in the reviews
@@ -313,7 +312,6 @@ def output_3_1_d(X, y):
     plt.xlabel('C = 10^x', fontsize=16)
     plt.ylabel('L0_norm', fontsize=16)
     plt.title('Part 3.1(d)')
-    plt.legend(loc=2)
     plt.show()
     print('DONE**********')
     print()
@@ -389,8 +387,7 @@ def output_3_4_b(X, y):
     plt.plot(exp, L0_data, '-or', label='L0_data')
     plt.xlabel('C = 10^x', fontsize=16)
     plt.ylabel('L0_norm', fontsize=16)
-    plt.title('Part 3.1(d)')
-    plt.legend(loc=2)
+    plt.title('Part 3.4(b)')
     plt.show()
     print('DONE**********')
     print()
@@ -553,10 +550,14 @@ def main():
     quadratic_L2_clf = SVC(kernel='poly', degree=2, C=1e2, coef0=1e2, class_weight='balanced')
     quadratic_L2_clf.fit(X_train, y_train)
 
-    output_4_b(linear_L2_clf, linear_L1_clf, quadratic_L2_clf, X_test, y_test)
+    # output_4_b(linear_L2_clf, linear_L1_clf, quadratic_L2_clf, X_test, y_test)
 
+    # thetas = linear_L1_clf.coef_[0]
+    #
+    # for i in range(thetas.shape[0]):
+    #     if not thetas[i] == 0:
+    #         print(str(thetas[i]) + ': ' + word_dict[i])
     return
-
 
 if __name__ == '__main__':
     main()
