@@ -4,7 +4,7 @@ import itertools
 
 import string as s
 from sklearn.svm import LinearSVC
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn.svm import SVC
 from sklearn import metrics
 from matplotlib import pyplot as plt
@@ -15,6 +15,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from enum import Enum
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.ensemble import BaggingClassifier
 
 
 
@@ -111,7 +112,7 @@ def cv_performance(clf, X, y, k=5, metric="accuracy"):
                    and 'specificity')
         Returns: average 'test' performance across the k folds as np.float64
     """
-    skf = KFold(n_splits=k).split(X, y)
+    skf = StratifiedKFold(n_splits=k).split(X, y)
     total_performance = np.float64(0)
     count = 0
     for train, test in skf:
@@ -204,7 +205,7 @@ def performance_CI(clf, X, y, metric="accuracy"):
             confidence interval (all three values as np.float64's)
     """
     n = X.shape[0]
-    N = 1000
+    N = 100
     samples_X = np.ndarray(shape=(N, X.shape[0], X.shape[1]))
     samples_y = np.ndarray(shape=(N, y.shape[0]), dtype=np.object_)
 
@@ -311,6 +312,31 @@ def custom_info_linear_L1(X, y):
     print('DONE**********')
     print()
 
+def custom_info_bagging(X, y):
+    print()
+    print('custom_info_bagging**********')
+    log_10_range = np.ndarray(shape=(50,))
+    perf_data = np.ndarray(shape=log_10_range.shape)
+    L0_norm_data = np.ndarray(shape=log_10_range.shape)
+    for i in range(log_10_range.shape[0]):
+        log_10_range[i] = np.random.uniform(-3, 3)
+    # C=np.power(10, log_10_range[index])
+    for index in range(log_10_range.shape[0]):
+        clf = SVC(kernel='linear', C=np.power(10, log_10_range[index]), class_weight='balanced')
+        bagging = BaggingClassifier(base_estimator=clf, n_estimators=10, random_state=0)
+        perf_data[index] = cv_performance(bagging, X, y)
+
+    plt.figure()
+    plt.plot(log_10_range, perf_data, 'or', label='perf_data')
+    plt.xlabel('C = 10^x', fontsize=16)
+    plt.ylabel('Accuracy', fontsize=16)
+    plt.title('Bagging')
+
+    print('Showing plot...')
+    plt.show()
+    print('DONE**********')
+    print()
+
 def main():
     np.set_printoptions(edgeitems=10)
     df = load_data('challenge.csv')
@@ -326,23 +352,39 @@ def main():
     # custom_info_gaussian_L2(X, y)
     # custom_info_linear_L2(X, y)
     # custom_info_linear_L1(X, y)
+    # custom_info_bagging(X, y)
 
     # gaussian_L2_mcclf= OneVsRestClassifier(SVC(kernel='rbf', C=1, class_weight='balanced'))
     # linear_L2_mcclf = OneVsRestClassifier(SVC(kernel='linear', C=1, class_weight='balanced', random_state=0))
     # linear_L1_mcclf = OneVsRestClassifier(LinearSVC(penalty='l1', dual=False, C=1, class_weight='balanced'))
 
 
-    C_val = np.power(10, -0.75)
-    linear_L1_mcclf = OneVsOneClassifier(LinearSVC(penalty='l1', dual=False, C=C_val, class_weight='balanced'))
-    linear_L1_mcclf.fit(X, y)
-    linear_perf = performance_CI(linear_L1_mcclf, X, y)
-    print('Linear | ' + str(linear_perf))
+    # C_val = np.power(10, -0.75)
+    # linear_L1_mcclf = OneVsOneClassifier(LinearSVC(penalty='l1', dual=False, C=C_val, class_weight='balanced'))
+    # linear_L1_mcclf.fit(X, y)
+    # linear_perf = performance_CI(linear_L1_mcclf, X, y)
+    # print('Linear | ' + str(linear_perf))
+    #
+    # y_pred = linear_L1_mcclf.predict(X_test)
+    # generate_challenge_labels(y_pred, 'mattcham')
+    #
+    # y_pred_conf = linear_L1_mcclf.predict(X)
+    # print(metrics.confusion_matrix(y, y_pred_conf, labels=['love', 'hate', 'sadness']))
 
-    y_pred = linear_L1_mcclf.predict(X_test)
+
+    clf = SVC(kernel='rbf', C=1000, class_weight='balanced')
+    bagging = BaggingClassifier(base_estimator=clf, n_estimators=10)
+    print('Accuracy: ' + str(cv_performance(bagging, X, y)))
+    bagging.fit(X, y)
+    bagging_perf = performance_CI(bagging, X, y)
+    print('bagging | ' + str(bagging_perf))
+
+    y_pred_conf = bagging.predict(X)
+    print(metrics.confusion_matrix(y, y_pred_conf, labels=['love', 'hate', 'sadness']))
+
+    y_pred = bagging.predict(X_test)
     generate_challenge_labels(y_pred, 'mattcham')
 
-    y_pred_conf = linear_L1_mcclf.predict(X)
-    print(metrics.confusion_matrix(y, y_pred_conf, labels=['love', 'hate', 'sadness']))
 
 
     return
