@@ -360,7 +360,7 @@ def main():
 
 
     # C_val = np.power(10, -0.75)
-    # linear_L1_mcclf = OneVsOneClassifier(LinearSVC(penalty='l1', dual=False, C=C_val, class_weight='balanced'))
+    # linear_L1_mcclf = LinearSVC(penalty='l1', dual=False, C=C_val, class_weight='balanced')
     # linear_L1_mcclf.fit(X, y)
     # linear_perf = performance_CI(linear_L1_mcclf, X, y)
     # print('Linear | ' + str(linear_perf))
