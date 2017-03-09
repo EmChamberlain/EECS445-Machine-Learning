@@ -82,25 +82,42 @@ class FER2013:
             resized.append(resized_image)
         return np.array(resized)
 
+    def remove_blank_images(self, images, labels):
+        blank_indices = []
+        for i in range(images.shape[0]):
+            if np.linalg.norm(images[i] - np.mean(images[i])) < 1:
+                blank_indices.append(i)
+        images_fixed = np.delete(images, blank_indices, axis=0)
+        labels_fixed = np.delete(labels, blank_indices, axis=0)
+
+        print('Images removed: ' + str(len(blank_indices)))
+        return images_fixed, labels_fixed
+
+    def normalize_images(self, images):
+        for row in images:
+            row  = np.subtract(row, np.mean(row))
+            row = np.divide(row, np.std(row))
+        return images
+
     def preprocessed_data(self, split, dim=32, one_hot=False, balance_classes=True):
         if not self.data_stored:
             self.read_csv()
         if split == 'train':
             print_if_verbose('Loading train data...')
             images, labels = self.train_images, self.train_labels
-            # TODO: Remove blank images
+            images, labels = self.remove_blank_images(images, labels)
             if balance_classes:
                 images, labels = self.balance_classes(images, labels, 5000)
         elif split == 'val':
             print_if_verbose('Loading validation data...')
             images, labels = self.val_images, self.val_labels
-            # TODO: Remove blank images
+            images, labels = self.remove_blank_images(images, labels)
             if balance_classes:
                 images, labels = self.balance_classes(images, labels, 500)
         elif split == 'test':
             print_if_verbose('Loading test data...')
             images, labels = self.test_images, self.test_labels
-            # TODO: Remove blank images
+            images, labels = self.remove_blank_images(images, labels)
             if balance_classes:
                 images, labels = self.balance_classes(images, labels, 500)
         else:
@@ -108,6 +125,12 @@ class FER2013:
             return
         images = self.resize(images, dim)
         # TODO: Normalize, add dimension, one-hot encoding of labels
+        images = self.normalize_images(images)
+        images = np.expand_dims(images, 3)
+        if one_hot:
+            temp_labels = np.zeros((labels.size, labels.max() + 1))
+            temp_labels[np.arrange(labels.size), labels] = 1
+            labels = temp_labels
 
         print_if_verbose('---Images shape: {}'.format(images.shape))
         print_if_verbose('---Labels shape: {}'.format(labels.shape))
