@@ -5,6 +5,14 @@
       <sourceFolder url="file://$MODULE_DIR$/HW1" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Project1" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/HW2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Project2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Project2/checkpoints" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Project2/code" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Project2/code/data_scripts" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Project2/code/engine" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Project2/code/model" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Project2/code/utils" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/Project2/data" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.5.2 (C:\Program Files\Anaconda3\python.exe)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
