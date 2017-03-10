@@ -34,7 +34,7 @@ def get_index_from_user_supplied_label(ys):
             print('Oops! Valid labels are in [0, 7)...')
     while True:
         index = np.random.choice(len(ys))
-        if ys[index] == label:
+        if ys[index][label] == label:
             return index
 
 

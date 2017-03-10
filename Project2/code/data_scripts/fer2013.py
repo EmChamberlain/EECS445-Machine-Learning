@@ -94,10 +94,14 @@ class FER2013:
         return images_fixed, labels_fixed
 
     def normalize_images(self, images):
-        for row in images:
-            row  = np.subtract(row, np.mean(row))
-            row = np.divide(row, np.std(row))
-        return images
+        images_fixed = np.zeros(shape=images.shape)
+        for i in range(images.shape[0]):
+            images_fixed[i]  = np.subtract(images[i], np.mean(images[i]))
+            images_fixed[i] = np.divide(images_fixed[i], np.std(images_fixed[i]))
+        return images_fixed
+
+    def one_hot(self, labels):
+        return np.eye(labels.max() + 1)[labels]
 
     def preprocessed_data(self, split, dim=32, one_hot=False, balance_classes=True):
         if not self.data_stored:
@@ -128,9 +132,7 @@ class FER2013:
         images = self.normalize_images(images)
         images = np.expand_dims(images, 3)
         if one_hot:
-            temp_labels = np.zeros((labels.size, labels.max() + 1))
-            temp_labels[np.arrange(labels.size), labels] = 1
-            labels = temp_labels
+            labels = self.one_hot(labels)
 
         print_if_verbose('---Images shape: {}'.format(images.shape))
         print_if_verbose('---Labels shape: {}'.format(labels.shape))

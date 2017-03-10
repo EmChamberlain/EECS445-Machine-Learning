@@ -46,6 +46,13 @@ def normalize(x):
 # TODO: if you write helper functions for building your neural nets, place
 #       those helper functions here. Above are three functions that we used
 #       when solving this problem. You may find them helpful.
+def weight(shape, stddev):
+    init = tf.random_normal(shape, mean=0.0, stddev=stddev, dtype=tf.float32)
+    return tf.Variable(init)
+
+def bias(shape):
+    init = tf.constant(0.01, shape=shape)
+    return tf.Variable(init)
 
 
 def autoencoder():
@@ -59,10 +66,21 @@ def autoencoder():
     #      `autoencoder`, may be somewhat longer. 
     #
     #      As stated in project docs, you may modify the body of this function
-    #      by adding, removing, or changing lines. 
-    orig = None  # TODO
-    compressed = None  # TODO
-    recon = None  # TODO
+    #      by adding, removing, or changing lines.
+
+    orig = tf.placeholder(tf.float32, shape=[None, 1024])
+
+    compressed = shrink(orig)
+
+    W_2 = weight([16*16, 16], (0.1) / (tf.sqrt(256.)))
+    b_2 = bias([16])
+
+    layer_2 = tf.nn.relu(tf.matmul(tf.reshape(compressed, [-1, 16*16]), W_2) + b_2)
+
+    W_3 = weight([16, 18 * 18 * 16], (0.1) / (tf.sqrt(16.)))
+    b_3 = bias([18 * 18 * 16])
+
+    recon = tf.nn.relu(tf.matmul(tf.reshape(layer_2, [-1, 16]), W_3) + b_3)
     recon = grow(recon, channel_dim=16, in_length=18, scale=2, out_length=32) 
     recon = normalize(recon) # Note: this makes `grow`'s bias variable have no effect;
                              #       we decide to include a bias variable in `grow` 
