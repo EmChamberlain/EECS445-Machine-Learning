@@ -18,7 +18,6 @@ from sklearn.model_selection import train_test_split
 from sklearn import utils
 
 
-
 def load_mnist(num_classes=4):
     """
     Load MNIST dataset for classes (0, 1, ... num_classes-1)
@@ -104,16 +103,14 @@ def random_forest(X_train, y_train, X_test, y_test, m, n_clf=10):
         X_boot, y_boot = utils.resample(X_train, y_train)
         clfs[i].fit(X_boot, y_boot)
 
-
     y_pred_temp = []
     for i in range(n_clf):
-       y_pred_temp.append(clfs[i].predict(X_test))
+        y_pred_temp.append(clfs[i].predict(X_test))
 
     y_pred_temp = np.transpose(y_pred_temp)
     y_pred = np.zeros(shape=(X_test.shape[0]))
     for i in range(y_pred.shape[0]):
         y_pred[i] = Counter(y_pred_temp[i].tolist()).most_common()[0][0]
-
 
     return metrics.accuracy_score(y_test, y_pred)
 

@@ -19,25 +19,6 @@ from data_scripts.fer2013_dataset import read_data_sets
 import matplotlib.pyplot as plt
 
 
-def get_index_from_user_supplied_label(ys):
-    ''' Return index (into validation set) corresponding to user-supplied
-        label.
-    '''
-    while True:
-        try:
-            label = int(input('Enter label in [0, 7): '))
-            assert (0 <= label < 7)
-            break
-        except ValueError:
-            print('Oops! I need an integer...')
-        except AssertionError:
-            print('Oops! Valid labels are in [0, 7)...')
-    while True:
-        index = np.random.choice(len(ys))
-        if ys[index][label] == 1:
-            return index
-
-
 def plot(subplot_index, image, name, nb_subplots=3):
     ''' Plot a given image side-by-side the previously plotted ones. '''
     plt.subplot(1, nb_subplots, subplot_index + 1)
@@ -46,20 +27,6 @@ def plot(subplot_index, image, name, nb_subplots=3):
     plt.title(name)
     plt.xticks([])
     plt.yticks([])
-
-
-def user_interaction_loop(ys, orig_images, naive_recons, auto_recons):
-    ''' Main loop: user enters labels to produce plots '''
-    sl = get('MODEL.SQRT_REPR_DIM')
-    try:
-        while True:
-            index = get_index_from_user_supplied_label(ys)
-            plot(0, orig_images[index].reshape(32, 32), 'original image')
-            plot(1, naive_recons[index].reshape(sl, sl), 'naive recon')
-            plot(2, auto_recons[index].reshape(32, 32), 'autoencoder recon')
-            plt.show()
-    except KeyboardInterrupt:
-        print('OK, bye!')
 
 
 if __name__ == '__main__':
@@ -77,10 +44,44 @@ if __name__ == '__main__':
     faces = read_data_sets()
     ys = faces.validation.labels
     Xs = faces.validation.images
+    Xs_baseline = np.ones(Xs.shape)
 
     print('computing reconstructions...')
-    Ns = naive_recon.eval(feed_dict={naive_orig: Xs})
     As = auto_recon.eval(feed_dict={auto_orig: Xs})
 
-    print('starting visualization...')
-    user_interaction_loop(ys, Xs, Ns, As)
+    rmse = np.sqrt(np.mean(np.square(np.subtract(Xs, As)), axis=1))
+    rmse_baseline = np.sqrt(np.mean(np.square(np.subtract(Xs, Xs_baseline)), axis=1))
+
+    classes = [[], [], [], [], [], [], []]
+    for i in range(ys.shape[0]):
+        for j in range(ys[i].shape[0]):
+            if ys[i][j] == 1:
+                classes[j].append(i)
+
+    print('Baseline RMSE: ' + str(np.mean(rmse_baseline)))
+    curr_class = 0
+    for cl in classes:
+        argmin = cl[0]
+        argmax = cl[0]
+        argavg = cl[0]
+
+        total_rmse = 0
+        num = 0
+
+        for i in cl:
+            if rmse[i] < rmse[argmin]:
+                argmin = i
+            if rmse[i] > rmse[argmax]:
+                argmax = i
+            rmseavg = (rmse[argmin] + rmse[argmax]) / 2
+            if np.abs(rmseavg - rmse[i]) < np.abs(rmseavg - rmse[argavg]):
+                argavg = i
+            total_rmse += rmse[i]
+            num += 1
+        print('Class ' + str(curr_class) + ' average error: ' + str(total_rmse / num))
+        curr_class += 1
+
+        plot(0, Xs[argmin].reshape(32, 32), 'best case')
+        plot(1, Xs[argmax].reshape(32, 32), 'worst case')
+        plot(2, Xs[argavg].reshape(32, 32), 'typical case')
+        plt.show()

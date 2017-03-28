@@ -59,6 +59,7 @@ def extract_dictionary(df):
         unique = np.delete(unique, 0)
     return unique
 
+
 def generate_feature_matrix(df, word_dict):
     """
         Reads a dataframe and the dictionary of words in the reviews
@@ -248,6 +249,7 @@ def performance_CI(clf, X, y, metric="accuracy"):
     upper_bound = sample_performance[np.int64(np.rint(sample_performance.shape[0] * (0.975)))]
 
     return np.float64(perf), np.float64(lower_bound), np.float64(upper_bound)
+
 
 def output_2_c(word_dict, X, y):
     print()
@@ -498,6 +500,7 @@ def custom_info_quadratic_L2(X, y):
     print('DONE**********')
     print()
 
+
 def output_4_b(linear_L2_clf, linear_L1_clf, quadratic_L2_clf, X_test, y_test):
     print()
     print('4(b)*******')
@@ -518,6 +521,7 @@ def output_4_b(linear_L2_clf, linear_L1_clf, quadratic_L2_clf, X_test, y_test):
 
     print('DONE**********')
     print()
+
 
 def main():
     np.set_printoptions(edgeitems=10)
@@ -558,6 +562,7 @@ def main():
     #     if not thetas[i] == 0:
     #         print(str(thetas[i]) + ': ' + word_dict[i])
     return
+
 
 if __name__ == '__main__':
     main()

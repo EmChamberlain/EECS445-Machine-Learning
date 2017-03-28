@@ -69,7 +69,7 @@ class FER2013:
         balanced_labels = np.array(balanced_labels)
         print('---Shuffled images shape: {}'.format(balanced_images.shape))
         print('---Shuffled labels shape: {}'.format(balanced_labels.shape))
-        assert(len(balanced_images) == len(balanced_labels))
+        assert (len(balanced_images) == len(balanced_labels))
         shuffle_idx = np.random.permutation(len(balanced_images))
         return balanced_images[shuffle_idx], balanced_labels[shuffle_idx]
 
@@ -96,7 +96,7 @@ class FER2013:
     def normalize_images(self, images):
         images_fixed = np.zeros(shape=images.shape)
         for i in range(images.shape[0]):
-            images_fixed[i]  = np.subtract(images[i], np.mean(images[i]))
+            images_fixed[i] = np.subtract(images[i], np.mean(images[i]))
             images_fixed[i] = np.divide(images_fixed[i], np.std(images_fixed[i]))
         return images_fixed
 

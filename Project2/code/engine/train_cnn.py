@@ -33,9 +33,9 @@ def report_training_progress(batch_index, input_layer, loss_func, faces):
     if batch_index % 50:
         return
     error = loss_func.eval(feed_dict={input_layer: faces.validation.images[
-                           :2000], true_labels: faces.validation.labels[:2000]})
+                                                   :2000], true_labels: faces.validation.labels[:2000]})
     acc = accuracy.eval(feed_dict={input_layer: faces.validation.images[
-                        :2000], true_labels: faces.validation.labels[:2000]})
+                                                :2000], true_labels: faces.validation.labels[:2000]})
     # error = loss_func.eval(feed_dict={input_layer: faces.test.images, true_labels: faces.test.labels})
     # acc = accuracy.eval(feed_dict={input_layer: faces.test.images, true_labels: faces.test.labels})
     print('\n \t cross_entropy is about %f' % error)
@@ -61,10 +61,13 @@ if __name__ == '__main__':
     sess = tf.InteractiveSession()  # start talking to tensorflow backend
     input_layer, prediction_layer = cnn()  # fetch model layers
     true_labels = tf.placeholder(tf.float32, shape=[None, 7])
-    cross_entropy =  tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=true_labels, logits=prediction_layer))# TODO: define the loss function
-    correct_prediction =  tf.equal(tf.argmax(prediction_layer, 1), tf.argmax(true_labels, 1))# TODO: define the correct predictions calculation
-    accuracy =  tf.reduce_mean(tf.cast(correct_prediction, tf.float32))# TODO: calculate accuracy
-    optimizer =  tf.train.AdamOptimizer(get('TRAIN.CNN.LEARNING_RATE')).minimize(cross_entropy)# TODO: define the training step
+    cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=true_labels,
+                                                                           logits=prediction_layer))  # TODO: define the loss function
+    correct_prediction = tf.equal(tf.argmax(prediction_layer, 1),
+                                  tf.argmax(true_labels, 1))  # TODO: define the correct predictions calculation
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))  # TODO: calculate accuracy
+    optimizer = tf.train.AdamOptimizer(get('TRAIN.CNN.LEARNING_RATE')).minimize(
+        cross_entropy)  # TODO: define the training step
     sess.run(tf.global_variables_initializer())  # initialize some globals
     saver = tf.train.Saver()  # prepare to save model
     # load model weights if they were saved previously

@@ -18,7 +18,6 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.ensemble import BaggingClassifier
 
 
-
 def load_data(fname):
     """
     Reads in a csv file and return a dataframe. A dataframe df is similar to dictionary.
@@ -64,6 +63,7 @@ def extract_dictionary(df):
         unique = np.delete(unique, 0)
     return unique
 
+
 def generate_feature_matrix(df, word_dict):
     """
         Reads a dataframe and the dictionary of words in the reviews
@@ -90,6 +90,7 @@ def generate_feature_matrix(df, word_dict):
                 mat[row_index][dict_index] += 1
 
     return mat
+
 
 def performance(y_true, y_pred):
     return np.float64(metrics.accuracy_score(y_true, y_pred))
@@ -228,6 +229,7 @@ def performance_CI(clf, X, y, metric="accuracy"):
 
     return np.float64(perf), np.float64(lower_bound), np.float64(upper_bound)
 
+
 def custom_info_gaussian_L2(X, y):
     print()
     print('custom_info_gaussian_L2**********')
@@ -239,7 +241,8 @@ def custom_info_gaussian_L2(X, y):
     # C=np.power(10, log_10_range[index])
     best_ind = 0
     for index in range(log_10_range.shape[0]):
-        mcclf = OneVsOneClassifier(SVC(kernel='rbf', C=np.power(10, log_10_range[index]), class_weight='balanced', random_state=0))
+        mcclf = OneVsOneClassifier(
+            SVC(kernel='rbf', C=np.power(10, log_10_range[index]), class_weight='balanced', random_state=0))
         perf_data[index] = cv_performance(mcclf, X, y, metric='auroc')
         if perf_data[index] > perf_data[best_ind]:
             best_ind = index
@@ -257,6 +260,7 @@ def custom_info_gaussian_L2(X, y):
     print()
     return np.power(10, log_10_range[best_ind])
 
+
 def custom_info_linear_L2(X, y):
     print()
     print('custom_info_linear_L2**********')
@@ -268,7 +272,8 @@ def custom_info_linear_L2(X, y):
     # C=np.power(10, log_10_range[index])
     best_ind = 0
     for index in range(log_10_range.shape[0]):
-        mcclf = OneVsOneClassifier(SVC(kernel='linear', C=np.power(10, log_10_range[index]), class_weight='balanced', random_state=0))
+        mcclf = OneVsOneClassifier(
+            SVC(kernel='linear', C=np.power(10, log_10_range[index]), class_weight='balanced', random_state=0))
         perf_data[index] = cv_performance(mcclf, X, y, metric='auroc')
         if perf_data[index] > perf_data[best_ind]:
             best_ind = index
@@ -288,6 +293,7 @@ def custom_info_linear_L2(X, y):
 
     return np.power(10, log_10_range[best_ind])
 
+
 def custom_info_linear_L1(X, y):
     print()
     print('custom_info_linear_L1**********')
@@ -298,7 +304,8 @@ def custom_info_linear_L1(X, y):
         log_10_range[i] = np.random.uniform(-5, 5)
     # C=np.power(10, log_10_range[index])
     for index in range(log_10_range.shape[0]):
-        mcclf = OneVsOneClassifier(LinearSVC(penalty='l1', dual=False, C=np.power(10, log_10_range[index]), class_weight='balanced'))
+        mcclf = OneVsOneClassifier(
+            LinearSVC(penalty='l1', dual=False, C=np.power(10, log_10_range[index]), class_weight='balanced'))
         perf_data[index] = cv_performance(mcclf, X, y, metric='auroc')
 
     plt.figure()
@@ -311,6 +318,7 @@ def custom_info_linear_L1(X, y):
     plt.show()
     print('DONE**********')
     print()
+
 
 def custom_info_bagging(X, y):
     print()
@@ -337,6 +345,7 @@ def custom_info_bagging(X, y):
     print('DONE**********')
     print()
 
+
 def main():
     np.set_printoptions(edgeitems=10)
     df = load_data('challenge.csv')
@@ -347,7 +356,6 @@ def main():
 
     df_test = load_data('held_out.csv')
     X_test = generate_feature_matrix(df_test, word_dict)
-
 
     # custom_info_gaussian_L2(X, y)
     # custom_info_linear_L2(X, y)
@@ -385,9 +393,8 @@ def main():
     y_pred = bagging.predict(X_test)
     generate_challenge_labels(y_pred, 'mattcham')
 
-
-
     return
+
 
 if __name__ == '__main__':
     main()

@@ -34,7 +34,7 @@ class Point(object):
         other: point, to which we are measuring distance to
         Return Euclidean distance of this point with other
         """
-        #TODO
+        # TODO
         return np.linalg.norm(self.attrs - other.attrs)
 
     def get_name(self):
@@ -74,7 +74,7 @@ class Cluster(object):
     def get_centroid(self):
         """Returns centroid of the cluster"""
         # TODO
-        centroid = np.zeros(shape=(self.points[0].dimensionality(), ))
+        centroid = np.zeros(shape=(self.points[0].dimensionality(),))
         for point in self.points:
             centroid = np.add(centroid, point.get_attrs())
         return Point('centroid', -1, np.divide(centroid, len(self.points)))
@@ -134,6 +134,7 @@ class ClusterSet(object):
         for cluster in self.members:
             centroids.append(cluster.get_centroid())
         return centroids
+
     def get_score(self):
         """
             Returns accuracy of the clusering given by the clusters

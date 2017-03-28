@@ -58,7 +58,7 @@ if __name__ == '__main__':
     print('building model...')
     sess = tf.InteractiveSession()  # start talking to tensorflow backend
     original_image, compressed, reconstruction = autoencoder()  # fetch model layers
-    rmse =  tf.sqrt(tf.reduce_mean(tf.square(tf.subtract(original_image, reconstruction))))
+    rmse = tf.sqrt(tf.reduce_mean(tf.square(tf.subtract(original_image, reconstruction))))
     # TODO: define loss function using TensorFlow. `rmse` should depend
     #       on `original_image` and `reconstruction`.
     optimizer = tf.train.AdamOptimizer(get('TRAIN.AUTOENCODER.LEARNING_RATE')).minimize(rmse)
@@ -76,6 +76,20 @@ if __name__ == '__main__':
 
     print('training...')
     train_autoencoder(original_image, rmse, optimizer, faces)
+
+    total_parameters = 0
+    for variable in tf.trainable_variables():
+        # shape is an array of tf.Dimension
+        shape = variable.get_shape()
+        # print(shape)
+        # print(len(shape))
+        variable_parametes = 1
+        for dim in shape:
+            # print(dim)
+            variable_parametes *= dim.value
+        # print(variable_parametes)
+        total_parameters += variable_parametes
+    print('Total parameters: ' + str(total_parameters))
 
     print('saving trained model...\n')
     saver.save(sess, get('TRAIN.AUTOENCODER.CHECKPOINT'))

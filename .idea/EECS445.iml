@@ -12,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Project2/code/engine" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Project2/code/model" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Project2/code/utils" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/HW3" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/Project2/data" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.5.2 (C:\Program Files\Anaconda3\python.exe)" jdkType="Python SDK" />

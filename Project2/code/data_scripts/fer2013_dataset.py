@@ -33,7 +33,6 @@ else:
 
 
 class DataSet(object):
-
     def __init__(self,
                  images,
                  labels,
@@ -107,7 +106,8 @@ class DataSet(object):
             end = self._index_in_epoch
             images_new_part = self._images[start:end]
             labels_new_part = self._labels[start:end]
-            return np.concatenate((images_rest_part, images_new_part), axis=0), np.concatenate((labels_rest_part, labels_new_part), axis=0)
+            return np.concatenate((images_rest_part, images_new_part), axis=0), np.concatenate(
+                (labels_rest_part, labels_new_part), axis=0)
         else:
             self._index_in_epoch += batch_size
             end = self._index_in_epoch

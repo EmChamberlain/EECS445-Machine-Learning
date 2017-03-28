@@ -61,14 +61,14 @@ def k_means_pp_init(points, k):
     # TODO
     starting_point = random.choice(points)
     centroids = [starting_point]
-    for i in range(k-1):
-        probabilities = np.ndarray(shape=(len(points), ))
+    for i in range(k - 1):
+        probabilities = np.ndarray(shape=(len(points),))
         sum = 0
         for point_ind in range(len(points)):
             if points[point_ind] in centroids:
                 probabilities[point_ind] = 0
             else:
-                dist = np.power(points[point_ind].distance(centroids[-1]),2)
+                dist = np.power(points[point_ind].distance(centroids[-1]), 2)
                 probabilities[point_ind] = dist
                 sum += dist
         probabilities = np.divide(probabilities, sum)
@@ -122,7 +122,7 @@ def k_means(points, k, init='random'):
     while True:
 
         assign = []
-        for  point in points:
+        for point in points:
             min_ind = 0
             min_dist = point.distance(centroids[0])
             for i in range(1, len(centroids)):
@@ -141,10 +141,7 @@ def k_means(points, k, init='random'):
             break
         cluster_set = new_set
 
-
     return cluster_set
-
-
 
 
 def plot_performance(k_means_Scores, kpp_Scores, k_vals):
@@ -169,15 +166,15 @@ def plot_performance(k_means_Scores, kpp_Scores, k_vals):
     plt.title('Part 2(c)')
     plt.show()
 
+
 def main():
     X, y = clustering_utils.get_data()
     points = build_face_image_points(X, y)
 
     num_iterations = 10
     k_vals = list(range(1, 11))
-    k_means_Scores = np.zeros(shape=(len(k_vals),num_iterations))
-    kpp_Scores = np.zeros(shape=(len(k_vals),num_iterations))
-
+    k_means_Scores = np.zeros(shape=(len(k_vals), num_iterations))
+    kpp_Scores = np.zeros(shape=(len(k_vals), num_iterations))
 
     for i in range(num_iterations):
         print('Iteration: ' + str(i))
@@ -186,6 +183,10 @@ def main():
             kpp_Scores[k_ind][i] = k_means(points, k_vals[k_ind], init='cheat').get_score()
 
     plot_performance(np.mean(k_means_Scores, axis=1), np.mean(kpp_Scores, axis=1), k_vals)
+    print('KMeans k=3: average = ' + str(np.mean(k_means_Scores[3])) + ' min = ' + str(np.min(k_means_Scores[3])) +
+          ' max = ' + str(np.max(k_means_Scores[3])))
+    print('KMeans++ k=6: average = ' + str(np.mean(k_means_Scores[6])) + ' min = ' + str(np.min(k_means_Scores[6])) +
+          ' max = ' + str(np.max(k_means_Scores[6])))
 
 
 if __name__ == '__main__':

@@ -9,18 +9,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # LABELLED DATA
-X = np.array([[ 0.91281307, 0.10953233],\
-              [ 0.08718399, 0.82802638],\
-              [ 0.23744548, 0.08097967],\
-              [ 0.47536559, 0.30639172],\
-              [ 0.67336331, 0.25726507],\
-              [ 0.84573874, 0.26380655],\
-              [ 0.44222202, 0.14736479],\
-              [ 0.46680658, 0.54903108],\
-              [ 0.22367281, 0.63011133],\
-              [ 0.87236129, 0.4586615 ]])
+X = np.array([[0.91281307, 0.10953233], \
+              [0.08718399, 0.82802638], \
+              [0.23744548, 0.08097967], \
+              [0.47536559, 0.30639172], \
+              [0.67336331, 0.25726507], \
+              [0.84573874, 0.26380655], \
+              [0.44222202, 0.14736479], \
+              [0.46680658, 0.54903108], \
+              [0.22367281, 0.63011133], \
+              [0.87236129, 0.4586615]])
 
 labels = np.array([1, -1, -1, 1, 1, 1, 1, -1, -1, -1])
+
+
 # END OF DATA
 
 # HELPER FUNCTIONS
@@ -34,6 +36,7 @@ def stumpClassificationResult(feature, threshold, compare, X):
         return np.sign(X[:, feature] - threshold)
     else:
         return np.sign(threshold - X[:, feature])
+
 
 def bestDecisionStump(w, X, labels):
     '''
@@ -63,6 +66,8 @@ def bestDecisionStump(w, X, labels):
                     bestThreshold = threshold
                     bestOperator = compare
     return bestFeature, bestThreshold, bestOperator
+
+
 # END OF HELPER FUNCTIONS
 
 
@@ -78,17 +83,17 @@ def adaBoost(X, labels, M):
         alpha: an array containing weights of classifiers in functions
     '''
     N = X.shape[0]
-    w = 1.0/N * np.ones(N)
+    w = 1.0 / N * np.ones(N)
     alpha = np.zeros(M)
     functions = []
     for m in range(M):
         f = bestDecisionStump(w, X, labels)
-        print('decision stump #%d: x_%d' % (m, f[0]),  f[2], f[1])
+        print('decision stump #%d: x_%d' % (m, f[0]), f[2], f[1])
         functions.append(f)
 
         t = stumpClassificationResult(f[0], f[1], f[2], X)
         err = np.dot(w, np.not_equal(t, labels))
-        alpha[m] = 0.5 * np.log((1-err)/(err))
+        alpha[m] = 0.5 * np.log((1 - err) / (err))
 
         sum = 0
         for i in range(N):
@@ -123,6 +128,7 @@ def classify(functions, alpha, X):
 
     return t
 
+
 def plot_graph():
     pos_examples_x1 = []
     pos_examples_x2 = []
@@ -145,13 +151,13 @@ def plot_graph():
     plt.ylabel('x2')
     plt.show()
 
+
 def main():
     # plot_graph()
     functions, alpha = adaBoost(X, labels, 2)
     print('alpha:', alpha)
     t = classify(functions, alpha, X)
     print(np.equal(t, labels))
-
 
 
 if __name__ == '__main__':

@@ -6,7 +6,6 @@ Interface for reading config file
 
 import glob
 
-
 try:
     with open('config.json') as f:
         config = eval(f.read())
@@ -40,8 +39,8 @@ def is_file_prefix(attr):
 
 def test():
     ''' Ensure reading works '''
-    assert(get('META.AUTHOR') == '445 Staff')
-    assert(get('META.AUTHOR') != '445Staff')
+    assert (get('META.AUTHOR') == '445 Staff')
+    assert (get('META.AUTHOR') != '445Staff')
     print('utils.config test passed!')
 
 

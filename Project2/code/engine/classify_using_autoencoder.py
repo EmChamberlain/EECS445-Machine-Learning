@@ -18,7 +18,7 @@ if __name__ == '__main__':
         'TRAIN.AUTOENCODER.CHECKPOINT'), 'training checkpoint not found!'
     print('building model...')
     sess = tf.InteractiveSession()  # start talking to tensorflow backend
-    original_image, compressed, reconstruction = autoencoder()  # fetch model layers
+    original_image, compressed, reconstruction, keep_probability = autoencoder()  # fetch model layers
     sess.run(tf.global_variables_initializer())  # initialize some globals
     saver = tf.train.Saver()  # prepare to restore model
     saver.restore(sess, get('TRAIN.AUTOENCODER.CHECKPOINT'))
@@ -29,12 +29,12 @@ if __name__ == '__main__':
 
     print('training classifier...')
     compressed_trainset = compressed.eval(
-        feed_dict={original_image: faces.train.images})
+        feed_dict={original_image: faces.train.images, keep_probability: 1.0})
     clf = LogisticRegression()  # TODO (optional): adjust hyperparameters
     clf.fit(compressed_trainset, faces.train.labels)
 
     print('testing classfier...')
     compressed_testset = compressed.eval(
-        feed_dict={original_image: faces.test.images})
+        feed_dict={original_image: faces.test.images, keep_probability: 1.0})
     accuracy = clf.score(compressed_testset, faces.test.labels)
     print('Autoencoder-based classifier achieves accuracy \n%f' % accuracy)
